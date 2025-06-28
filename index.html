@@ -33,7 +33,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: -1; /* Places the background behind everything */
         }
         .bg-image {
             position: absolute;
@@ -63,23 +63,25 @@
         }
         .modal-enter { animation: fadeIn 0.3s ease-out; }
         .modal-leave { animation: fadeOut 0.3s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        @keyframes fadeOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.95); } }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); }
+        }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #eef2ff; }
         ::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #a5b4fc; }
-        
-        input[type=range] { -webkit-appearance: none; background: transparent; }
-        input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 5px; cursor: pointer; background: #a5b4fc; border-radius: 5px; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: #6366f1; cursor: pointer; margin-top: -6.5px; border: 2px solid white; }
     </style>
 </head>
 <body class="antialiased">
 
     <div id="bg-container"></div>
 
+    <!-- **FIXED**: Added 'relative' and 'z-10' to ensure this container is on top of the background -->
     <div id="app-container" class="relative z-10 max-w-7xl mx-auto p-4 md:p-6 lg:p-8 opacity-0 transition-opacity duration-500">
         
         <header class="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -103,7 +105,9 @@
                     <i data-lucide="chevron-down" class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none"></i>
                 </div>
                 <button id="google-login-btn" class="flex items-center space-x-2 bg-white/70 border border-slate-300/50 rounded-md py-2 px-4 text-sm font-medium hover:bg-white transition shadow">
-                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.222,0-9.521-3.355-11.048-7.962l-6.571,4.819C9.656,39.663,16.318,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C42.021,35.591,44,30.134,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path></svg>
+                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="18" height="18" viewBox="0 0 48 48">
+                        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.222,0-9.521-3.355-11.048-7.962l-6.571,4.819C9.656,39.663,16.318,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C42.021,35.591,44,30.134,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                        </svg>
                     <span data-translate="login">Login with Google</span>
                 </button>
                 <div id="user-profile" class="hidden items-center space-x-2">
@@ -114,6 +118,7 @@
         </header>
 
         <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
             <div class="lg:col-span-2 glass-panel p-4 sm:p-6 rounded-2xl shadow-lg">
                 <div class="flex justify-between items-center mb-4">
                     <button id="prev-month-btn" class="p-2 rounded-md hover:bg-white/50 transition"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600"></i></button>
@@ -131,6 +136,7 @@
                 </div>
                 <div id="calendar-body" class="calendar-grid"></div>
             </div>
+
             <div id="details-panel" class="glass-panel p-4 sm:p-6 rounded-2xl shadow-lg lg:h-[calc(100vh-8rem)] lg:overflow-y-auto">
                 <div class="text-center text-slate-500 py-16">
                     <i data-lucide="mouse-pointer-2" class="w-12 h-12 mx-auto text-slate-400"></i>
@@ -195,19 +201,17 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- STATE & CONFIG ---
             let currentDate = new Date('2025-06-24T12:00:00'); 
             let selectedDate = null;
             let currentLang = 'en';
             let tasks = {'2025-06-18':[{title:'Submit quarterly report',category:'work'}],'2025-06-25':[{title:'Doctor Appointment',category:'health'},{title:'Pay electricity bill',category:'personal'}],'2025-07-02':[{title:'Doctor Appointment',category:'health'}]};
             let attendance = {'2025-06-23':'Present','2025-06-22':'Absent','2025-06-20':'Half-day','2025-06-19':'Present','2025-06-18':'Present'};
-            let overtimeData = {'2025-06-20': 4, '2025-06-23': 2};
             let isLoggedIn = false;
 
             const translations = {
-                en:{appTitle:'AI Calendar',login:'Login with Google',months:["January","February","March","April","May","June","July","August","September","October","November","December"],daySun:'Sun',dayMon:'Mon',dayTue:'Tue',dayWed:'Wed',dayThu:'Thu',dayFri:'Fri',daySat:'Sat',selectDayPrompt:'Select a day to see details',loginPrompt:'Please log in to manage tasks and attendance.',tasksTitle:'Tasks',attendanceTitle:'Attendance',panchangTitle:'Panchang',addTask:'Add Task',present:'Present',absent:'Absent',halfDay:'Half-day',overtime: 'Overtime', overtimeHours: 'Hours', modalTaskTitle:'Add Task',modalTaskName:'Task',modalTaskCategory:'Category',modalTaskSave:'Save Task',categoryWork:'Work',categoryPersonal:'Personal',categoryHealth:'Health',categoryOther:'Other',noTasks:'No tasks for today.',aiSuggestionTitle:'AI Suggestion',aiAccept:'Add Task',aiDismiss:'Dismiss',monthlyReportTitle:"Monthly Report",attendanceReport:"Attendance Report",tasksReport:"Tasks Report",overtimeReport: "Overtime Report", totalPresent:"Total Present",totalAbsent:"Total Absent",totalHalfDays:"Total Half-days", totalOvertime: "Total Overtime", noTasksMonth:"No tasks were recorded for this month.",downloadReport:"Download Report",shareOnWhatsApp:"Share on WhatsApp", noOvertimeMonth: "No overtime was recorded for this month."},
-                hi:{appTitle:'एआई कैलेंडर',login:'Google से लॉगिन करें',months:["जनवरी","फ़रवरी","मार्च","अप्रैल","मई","जून","जुलाई","अगस्त","सितंबर","अक्टूबर","नवंबर","दिसंबर"],daySun:'रवि',dayMon:'सोम',dayTue:'मंगल',dayWed:'बुध',dayThu:'गुरु',dayFri:'शुक्र',daySat:'शनि',selectDayPrompt:'विवरण देखने के लिए एक दिन चुनें',loginPrompt:'कृपया कार्यों और उपस्थिति का प्रबंधन करने के लिए लॉग इन करें।',tasksTitle:'कार्य',attendanceTitle:'उपस्थिति',panchangTitle:'पंचांग',addTask:'कार्य जोड़ें',present:'उपस्थित',absent:'अनुपस्थित',halfDay:'आधा दिन',overtime: 'ओवरટાઈમ', overtimeHours: 'घंटे', modalTaskTitle:'कार्य जोड़ें',modalTaskName:'कार्य',modalTaskCategory:'श्रेणी',modalTaskSave:'कार्य सहेजें',categoryWork:'काम',categoryPersonal:'निजी',categoryHealth:'स्वास्थ्य',categoryOther:'अन्य',noTasks:'आज के लिए कोई कार्य नहीं।',aiSuggestionTitle:'एआई सुझाव',aiAccept:'कार्य जोड़ें',aiDismiss:'खारिज करें',monthlyReportTitle:"मासिक रिपोर्ट",attendanceReport:"उपस्थिति रिपोर्ट",tasksReport:"कार्य रिपोर्ट",overtimeReport: "ओवरટાઈમ रिपोर्ट", totalPresent:"कुल उपस्थित",totalAbsent:"कुल अनुपस्थित",totalHalfDays:"कुल आधे दिन", totalOvertime: "कुल ओवरટાઈમ", noTasksMonth:"इस महीने के लिए कोई कार्य दर्ज नहीं किया गया।",downloadReport:"रिपोर्ट डाउनलोड करें",shareOnWhatsApp:"व्हाट्सएप पर साझा करें", noOvertimeMonth: "इस महीने कोई ओवरટાઈમ दर्ज नहीं किया गया।"},
-                gu:{appTitle:'એઆઈ કેલેન્ડર',login:'Google વડે લૉગિન કરો',months:["જાન્યુઆરી","ફેબ્રુઆરી","માર્ચ","એપ્રિલ","મે","જૂન","જુલાઈ","ઑગસ્ટ","સપ્ટેમ્બર","ઑક્ટોબર","નવેમ્બર","ડિસેમ્બર"],daySun:'રવિ',dayMon:'સોમ',dayTue:'મંગળ',dayWed:'બુધ',dayThu:'ગુરુ',dayFri:'શુક્ર',daySat:'શનિ',selectDayPrompt:'વિગતો જોવા માટે એક દિવસ પસંદ કરો',loginPrompt:'કૃપા કરીને કાર્યો અને હાજરીનું સંચાલન કરવા માટે લોગ ઇન કરો.',tasksTitle:'કાર્યો',attendanceTitle:'હાજરી',panchangTitle:'પંચાંગ',addTask:'કાર્ય ઉમેરો',present:'હાજર',absent:'ગેરહાજર',halfDay:'અડધો દિવસ',overtime: 'ઓવરટાઇમ', overtimeHours: 'કલાક', modalTaskTitle:'કાર્ય ઉમેરો',modalTaskName:'કાર્ય',modalTaskCategory:'શ્રેણી',modalTaskSave:'કાર્ય સાચવો',categoryWork:'કામ',categoryPersonal:'અંગત',categoryHealth:'આરોગ્ય',categoryOther:'અન્ય',noTasks:'આજ માટે કોઈ કાર્યો નથી.',aiSuggestionTitle:'એઆઈ સૂચન',aiAccept:'કાર્ય ઉમેરો',aiDismiss:'નકારો',monthlyReportTitle:"માસિક રિપોર્ટ",attendanceReport:"હાજરી રિપોર્ટ",tasksReport:"કાર્યોનો રિપોર્ટ",overtimeReport: "ઓવરટાઇમ રિપોર્ટ", totalPresent:"કુલ હાજર",totalAbsent:"કુલ ગેરહાજર",totalHalfDays:"કુલ અડધા દિવસ", totalOvertime: "કુલ ઓવરટાઇમ", noTasksMonth:"આ મહિને કોઈ ઓવરટાઇમ નોંધાયો નથી.",downloadReport:"રિપોર્ટ ડાઉનલોડ કરો",shareOnWhatsApp:"વોટ્સએપ પર શેર કરો"}
+                en:{appTitle:'AI Calendar',login:'Login with Google',months:["January","February","March","April","May","June","July","August","September","October","November","December"],daySun:'Sun',dayMon:'Mon',dayTue:'Tue',dayWed:'Wed',dayThu:'Thu',dayFri:'Fri',daySat:'Sat',selectDayPrompt:'Select a day to see details',loginPrompt:'Please log in to manage tasks and attendance.',tasksTitle:'Tasks',attendanceTitle:'Attendance',panchangTitle:'Panchang',addTask:'Add Task',present:'Present',absent:'Absent',halfDay:'Half-day',modalTaskTitle:'Add Task',modalTaskName:'Task',modalTaskCategory:'Category',modalTaskSave:'Save Task',categoryWork:'Work',categoryPersonal:'Personal',categoryHealth:'Health',categoryOther:'Other',noTasks:'No tasks for today.',aiSuggestionTitle:'AI Suggestion',aiAccept:'Add Task',aiDismiss:'Dismiss',monthlyReportTitle:"Monthly Report",attendanceReport:"Attendance Report",tasksReport:"Tasks Report",totalPresent:"Total Present",totalAbsent:"Total Absent",totalHalfDays:"Total Half-days",noTasksMonth:"No tasks were recorded for this month.",downloadReport:"Download Report",shareOnWhatsApp:"Share on WhatsApp"},
+                hi:{appTitle:'एआई कैलेंडर',login:'Google से लॉगिन करें',months:["जनवरी","फ़रवरी","मार्च","अप्रैल","मई","जून","जुलाई","अगस्त","सितंबर","अक्टूबर","नवंबर","दिसंबर"],daySun:'रवि',dayMon:'सोम',dayTue:'मंगल',dayWed:'बुध',dayThu:'गुरु',dayFri:'शुक्र',daySat:'शनि',selectDayPrompt:'विवरण देखने के लिए एक दिन चुनें',loginPrompt:'कृपया कार्यों और उपस्थिति का प्रबंधन करने के लिए लॉग इन करें।',tasksTitle:'कार्य',attendanceTitle:'उपस्थिति',panchangTitle:'पंचांग',addTask:'कार्य जोड़ें',present:'उपस्थित',absent:'अनुपस्थित',halfDay:'आधा दिन',modalTaskTitle:'कार्य जोड़ें',modalTaskName:'कार्य',modalTaskCategory:'श्रेणी',modalTaskSave:'कार्य सहेजें',categoryWork:'काम',categoryPersonal:'निजी',categoryHealth:'स्वास्थ्य',categoryOther:'अन्य',noTasks:'आज के लिए कोई कार्य नहीं।',aiSuggestionTitle:'एआई सुझाव',aiAccept:'कार्य जोड़ें',aiDismiss:'खारिज करें',monthlyReportTitle:"मासिक रिपोर्ट",attendanceReport:"उपस्थिति रिपोर्ट",tasksReport:"कार्य रिपोर्ट",totalPresent:"कुल उपस्थित",totalAbsent:"कुल अनुपस्थित",totalHalfDays:"कुल आधे दिन",noTasksMonth:"इस महीने के लिए कोई कार्य दर्ज नहीं किया गया।",downloadReport:"रिपोर्ट डाउनलोड करें",shareOnWhatsApp:"व्हाट्सएप पर साझा करें"},
+                gu:{appTitle:'એઆઈ કેલેન્ડર',login:'Google વડે લૉગિન કરો',months:["જાન્યુઆરી","ફેબ્રુઆરી","માર્ચ","એપ્રિલ","મે","જૂન","જુલાઈ","ઑગસ્ટ","સપ્ટેમ્બર","ઑક્ટોબર","નવેમ્બર","ડિસેમ્બર"],daySun:'રવિ',dayMon:'સોમ',dayTue:'મંગળ',dayWed:'બુધ',dayThu:'ગુરુ',dayFri:'શુક્ર',daySat:'શનિ',selectDayPrompt:'વિગતો જોવા માટે એક દિવસ પસંદ કરો',loginPrompt:'કૃપા કરીને કાર્યો અને હાજરીનું સંચાલન કરવા માટે લોગ ઇન કરો.',tasksTitle:'કાર્યો',attendanceTitle:'હાજરી',panchangTitle:'પંચાંગ',addTask:'કાર્ય ઉમેરો',present:'હાજર',absent:'ગેરહાજર',halfDay:'અડધો દિવસ',modalTaskTitle:'કાર્ય ઉમેરો',modalTaskName:'કાર્ય',modalTaskCategory:'શ્રેણી',modalTaskSave:'કાર્ય સાચવો',categoryWork:'કામ',categoryPersonal:'અંગત',categoryHealth:'આરોગ્ય',categoryOther:'અન્ય',noTasks:'આજ માટે કોઈ કાર્યો નથી.',aiSuggestionTitle:'એઆઈ સૂચન',aiAccept:'કાર્ય ઉમેરો',aiDismiss:'નકારો',monthlyReportTitle:"માસિક રિપોર્ટ",attendanceReport:"હાજરી રિપોર્ટ",tasksReport:"કાર્યોનો રિપોર્ટ",totalPresent:"કુલ હાજર",totalAbsent:"કુલ ગેરહાજર",totalHalfDays:"કુલ અડધા દિવસ",noTasksMonth:"આ મહિના માટે કોઈ કાર્યો નોંધાયા નથી.",downloadReport:"રિપોર્ટ ડાઉનલોડ કરો",shareOnWhatsApp:"વોટ્સએપ પર શેર કરો"}
             };
             const panchangData = {'2025-06-23':{tithi:'દશમ',maas:'જેઠ',samvat:'૨૦૮૧'},'2025-06-24':{tithi:'અગિયારસ',maas:'જેઠ',samvat:'૨૦૮૧'},'2025-06-25':{tithi:'બારસ',maas:'જેઠ',samvat:'૨૦૮૧'}};
             const categoryColors = {work:'bg-blue-500',personal:'bg-green-500',health:'bg-red-500',other:'bg-purple-500'};
@@ -219,13 +223,25 @@
             const detailsPanel = document.getElementById('details-panel');
             const taskModal = document.getElementById('task-modal');
             const reportModal = document.getElementById('report-modal');
+            const taskForm = document.getElementById('task-form');
             const googleLoginBtn = document.getElementById('google-login-btn');
             const appContainer = document.getElementById('app-container');
             const bgContainer = document.getElementById('bg-container');
-            
-            const formatDate = (date) => date.toISOString().split('T')[0];
-            const toggleModal = (modal, show) => { if(show){modal.classList.remove('hidden','modal-leave');modal.classList.add('modal-enter')} else {modal.classList.add('modal-leave');setTimeout(()=>modal.classList.add('hidden'),300)} };
 
-            function translateUI() {
-                document.querySelectorAll('[data-translate]').forEach(el => {
-                    const key = el.dataset.transl
+            const formatDate = (date) => date.toISOString().split('T')[0];
+
+            const translateUI = () => {
+                document.querySelectorAll('[data-translate]').forEach(el=>{const key = el.dataset.translate; if(translations[currentLang]&&translations[currentLang][key]){el.textContent = translations[currentLang][key]}});
+                document.querySelectorAll('[data-translate-title]').forEach(el=>{const key = el.dataset.translateTitle; if(translations[currentLang]&&translations[currentLang][key]){el.setAttribute('title',translations[currentLang][key])}});
+                renderCalendar();
+                if(selectedDate){renderDayDetails(selectedDate)}
+            };
+            
+            const renderCalendar = () => {
+                calendarBody.innerHTML = '';
+                const month = currentDate.getMonth();
+                const year = currentDate.getFullYear();
+                currentMonthYearEl.textContent = `${translations[currentLang].months[month]} ${year}`;
+                const firstDayOfMonth = new Date(year,month,1).getDay();
+                const daysInMonth = new Date(year,month+1,0).getDate();
+                for(let i=0;i<firstDayOfMonth;i++){cal
