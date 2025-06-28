@@ -244,4 +244,149 @@
                 currentMonthYearEl.textContent = `${translations[currentLang].months[month]} ${year}`;
                 const firstDayOfMonth = new Date(year,month,1).getDay();
                 const daysInMonth = new Date(year,month+1,0).getDate();
-                for(let i=0;i<firstDayOfMonth;i++){cal
+                for(let i=0;i<firstDayOfMonth;i++){calendarBody.innerHTML+=`<div class="border-r border-b border-white/20"></div>`}
+                for(let day=1;day<=daysInMonth;day++){
+                    const loopDate = new Date(year,month,day);
+                    const dateStr = formatDate(loopDate);
+                    const isToday = formatDate(new Date())===dateStr;
+                    const isSelected = selectedDate?formatDate(selectedDate)===dateStr:false;
+                    const dayAttendance = attendance[dateStr];
+                    let dayClasses = `day-cell relative h-20 md:h-28 border-r border-b border-white/20 p-1.5 cursor-pointer transition duration-150 ease-in-out`;
+                    let dayTextClasses = `text-sm font-medium`;
+                    if(dayAttendance){if(dayAttendance==='Present'){dayClasses+=' bg-green-500/80 hover:bg-green-500';dayTextClasses+=' text-white'}else if(dayAttendance==='Absent'){dayClasses+=' bg-red-500/80 hover:bg-red-500';dayTextClasses+=' text-white'}else if(dayAttendance==='Half-day'){dayClasses+=' bg-yellow-400/80 hover:bg-yellow-400';dayTextClasses+=' text-yellow-900'}}else{if(isToday)dayClasses+=' bg-indigo-200/50';dayClasses+=' hover:bg-white/50';dayTextClasses+=isToday?' text-indigo-700 font-bold':' text-slate-700'}
+                    if(isSelected)dayClasses+=' ring-2 ring-indigo-500 z-10';
+                    let cellHTML = `<div class="${dayClasses}" data-date="${dateStr}"><span class="${dayTextClasses}">${day}</span>`;
+                    const dayTasks = tasks[dateStr]||[];
+                    if(dayTasks.length>0){let indicatorsHTML='<div class="absolute bottom-1.5 left-1.5 flex items-center space-x-1">';const dotBorder = dayAttendance?'ring-1 ring-white/50':'';indicatorsHTML+=`<div class="w-2 h-2 rounded-full bg-blue-600 ${dotBorder}" title="${dayTasks.length} task(s)"></div>`;indicatorsHTML+='</div>';cellHTML+=indicatorsHTML}
+                    cellHTML+=`</div>`;
+                    calendarBody.innerHTML+=cellHTML
+                }
+                lucide.createIcons()
+            };
+
+            const renderDayDetails = (date) => {
+                const T = translations[currentLang];
+                if(!isLoggedIn){detailsPanel.innerHTML=`<div class="text-center text-slate-500 py-16"><i data-lucide="lock" class="w-12 h-12 mx-auto text-slate-400"></i><p class="mt-4 text-sm">${T.loginPrompt}</p></div>`;lucide.createIcons();return}
+                selectedDate = date;
+                const dateStr = formatDate(date);
+                const dayTasks = tasks[dateStr]||[];
+                const dayAttendance = attendance[dateStr]||'Not Marked';
+                const dayPanchang = panchangData[dateStr];
+                let detailsHTML = `<h3 class="text-lg font-semibold mb-1">${date.toLocaleDateString(currentLang,{weekday:'long',day:'numeric',month:'long'})}</h3><div class="border-b border-slate-300/50 pb-4 mb-4"></div><div class="mb-6"><h4 class="font-semibold mb-3">${T.attendanceTitle}</h4><div class="flex flex-wrap gap-2"><button class="attendance-btn text-sm font-medium py-1.5 px-3 rounded-md transition ${dayAttendance==='Present'?'bg-green-600 text-white shadow-md':'bg-green-100 text-green-800 hover:bg-green-200'}" data-status="Present">${T.present}</button><button class="attendance-btn text-sm font-medium py-1.5 px-3 rounded-md transition ${dayAttendance==='Absent'?'bg-red-600 text-white shadow-md':'bg-red-100 text-red-800 hover:bg-red-200'}" data-status="Absent">${T.absent}</button><button class="attendance-btn text-sm font-medium py-1.5 px-3 rounded-md transition ${dayAttendance==='Half-day'?'bg-yellow-500 text-white shadow-md':'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'}" data-status="Half-day">${T.halfDay}</button></div></div><div class="mb-6"><div class="flex justify-between items-center mb-3"><h4 class="font-semibold">${T.tasksTitle}</h4><button id="add-task-btn" class="flex items-center space-x-1 text-sm text-indigo-600 font-semibold hover:text-indigo-800 transition"><i data-lucide="plus" class="w-4 h-4"></i><span>${T.addTask}</span></button></div><div id="task-list" class="space-y-2">${dayTasks.length>0?dayTasks.map((task,index)=>`<div class="bg-white/60 p-3 rounded-lg flex items-center justify-between"><div class="flex items-center"><div class="w-2 h-2 rounded-full ${categoryColors[task.category]} mr-3"></div><p class="text-sm">${task.title}</p></div><button class="delete-task-btn p-1 rounded-full hover:bg-slate-200/50" data-index="${index}"><i data-lucide="trash-2" class="w-4 h-4 text-slate-500"></i></button></div>`).join(''):`<p class="text-sm text-slate-500">${T.noTasks}</p>`}</div></div>${dayPanchang?`<div class="mt-6 border-t border-slate-300/50 pt-4"><h4 class="font-semibold mb-3">${T.panchangTitle}</h4><div class="grid grid-cols-3 gap-4 text-center"><div><p class="text-xs text-slate-500">${T.tithi}</p><p class="font-semibold mt-1">${dayPanchang.tithi}</p></div><div><p class="text-xs text-slate-500">${T.maas}</p><p class="font-semibold mt-1">${dayPanchang.maas}</p></div><div><p class="text-xs text-slate-500">${T.samvat}</p><p class="font-semibold mt-1">${dayPanchang.samvat}</p></div></div></div>`:''}`;
+                detailsPanel.innerHTML=detailsHTML;renderCalendar();lucide.createIcons()
+            };
+
+            const toggleModal = (modal, show) => {
+                if(show){modal.classList.remove('hidden','modal-leave');modal.classList.add('modal-enter')}
+                else{modal.classList.add('modal-leave');setTimeout(()=>modal.classList.add('hidden'),300)}
+            };
+
+            const getReportAsText = () => {
+                const T = translations[currentLang];
+                const month = currentDate.getMonth();
+                const year = currentDate.getFullYear();
+                const daysInMonth = new Date(year,month+1,0).getDate();
+                const monthName = T.months[month];
+                let presentCount = 0, absentCount = 0, halfDayCount = 0;
+                const monthlyTasks = [];
+                for(let day=1;day<=daysInMonth;day++){
+                    const dateStr = formatDate(new Date(year,month,day));
+                    if(attendance[dateStr]){if(attendance[dateStr]==='Present')presentCount++;else if(attendance[dateStr]==='Absent')absentCount++;else if(attendance[dateStr]==='Half-day')halfDayCount++}
+                    if(tasks[dateStr]){tasks[dateStr].forEach(task=>monthlyTasks.push({date:new Date(dateStr+'T12:00:00'),...task}))}
+                }
+                let reportText = `*${T.monthlyReportTitle} - ${monthName} ${year}*\n\n`;
+                reportText += `*${T.attendanceReport}*\n`;
+                reportText += `- ${T.totalPresent}: ${presentCount}\n`;
+                reportText += `- ${T.totalAbsent}: ${absentCount}\n`;
+                reportText += `- ${T.totalHalfDays}: ${halfDayCount}\n\n`;
+                reportText += `*${T.tasksReport}*\n`;
+                if(monthlyTasks.length > 0){monthlyTasks.forEach(task=>{const taskDate=task.date.toLocaleDateString(currentLang,{day:'numeric',month:'short'});reportText+=`- [${taskDate}] ${task.title}\n`})}else{reportText+=`${T.noTasksMonth}\n`}
+                return reportText
+            };
+
+            const generateAndShowReport = () => {
+                const T = translations[currentLang];
+                const month = currentDate.getMonth();
+                const year = currentDate.getFullYear();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                let presentCount = 0, absentCount = 0, halfDayCount = 0;
+                const monthlyTasks = [];
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateStr = formatDate(new Date(year, month, day));
+                    if (attendance[dateStr]) {
+                        if (attendance[dateStr] === 'Present') presentCount++;
+                        else if (attendance[dateStr] === 'Absent') absentCount++;
+                        else if (attendance[dateStr] === 'Half-day') halfDayCount++;
+                    }
+                    if (tasks[dateStr]) {
+                        tasks[dateStr].forEach(task => monthlyTasks.push({ date: new Date(dateStr + 'T12:00:00'), ...task }));
+                    }
+                }
+
+                const reportContentEl = document.getElementById('report-content');
+                reportContentEl.innerHTML = `<div><h4 class="text-lg font-semibold mb-3">${T.attendanceReport}</h4><div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center"><div class="bg-green-100/50 p-3 rounded-lg"><p class="text-xs font-semibold text-green-800">${T.totalPresent}</p><p class="text-2xl font-bold text-green-700">${presentCount}</p></div><div class="bg-red-100/50 p-3 rounded-lg"><p class="text-xs font-semibold text-red-800">${T.totalAbsent}</p><p class="text-2xl font-bold text-red-700">${absentCount}</p></div><div class="bg-yellow-100/50 p-3 rounded-lg"><p class="text-xs font-semibold text-yellow-800">${T.totalHalfDays}</p><p class="text-2xl font-bold text-yellow-700">${halfDayCount}</p></div></div></div><div><h4 class="text-lg font-semibold mb-3 mt-6">${T.tasksReport}</h4><div class="space-y-2 max-h-60 overflow-y-auto pr-2">${monthlyTasks.length > 0 ? monthlyTasks.map(task => `<div class="bg-white/60 p-3 rounded-lg flex items-center justify-between"><div class="flex items-center"><div class="w-2 h-2 rounded-full ${categoryColors[task.category]} mr-3"></div><div><p class="text-sm font-medium">${task.title}</p><p class="text-xs text-slate-500">${task.date.toLocaleDateString(currentLang, {day: 'numeric', month: 'short'})}</p></div></div></div>`).join('') : `<p class="text-sm text-slate-500 text-center py-4">${T.noTasksMonth}</p>`}</div></div>`;
+                toggleModal(reportModal, true);
+            };
+
+            const triggerAISuggestion = () => {};
+            
+            const setupBackground = () => {
+                bgImages.forEach((imgUrl, index) => {
+                    const div = document.createElement('div');
+                    div.classList.add('bg-image');
+                    div.style.backgroundImage = `url(${imgUrl})`;
+                    if (index === 0) div.classList.add('visible');
+                    bgContainer.appendChild(div);
+                });
+                setInterval(() => {
+                    const allBgs = document.querySelectorAll('.bg-image');
+                    const nextIndex = (currentBgIndex + 1) % bgImages.length;
+                    allBgs[currentBgIndex].classList.remove('visible');
+                    allBgs[nextIndex].classList.add('visible');
+                    currentBgIndex = nextIndex;
+                }, 15000);
+            };
+
+            document.getElementById('monthly-report-btn').addEventListener('click', generateAndShowReport);
+            document.getElementById('close-report-modal').addEventListener('click', () => toggleModal(reportModal, false));
+            document.getElementById('download-report-btn').addEventListener('click', () => {
+                const reportText = getReportAsText();
+                const T = translations[currentLang];
+                const monthName = T.months[currentDate.getMonth()];
+                const year = currentDate.getFullYear();
+                const filename = `Report_${monthName}_${year}.txt`;
+                const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+            document.getElementById('whatsapp-share-btn').addEventListener('click', () => {
+                const reportText = getReportAsText();
+                const encodedText = encodeURIComponent(reportText);
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+                window.open(whatsappUrl, '_blank');
+            });
+            
+            document.getElementById('prev-month-btn').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+            document.getElementById('next-month-btn').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+            document.getElementById('language-selector').addEventListener('change', (e) => { currentLang = e.target.value; translateUI(); });
+            calendarBody.addEventListener('click', (e) => { const dayCell = e.target.closest('.day-cell'); if (dayCell) renderDayDetails(new Date(dayCell.dataset.date + 'T12:00:00')); });
+            detailsPanel.addEventListener('click', (e) => {
+                if (e.target.closest('#add-task-btn')) { taskForm.reset(); document.getElementById('task-date').value = formatDate(selectedDate); toggleModal(taskModal, true); }
+                if(e.target.classList.contains('attendance-btn')) { const status = e.target.dataset.status; const dateStr = formatDate(selectedDate); if (attendance[dateStr] === status) delete attendance[dateStr]; else attendance[dateStr] = status; renderDayDetails(selectedDate); }
+                if(e.target.closest('.delete-task-btn')) { const index = e.target.closest('.delete-task-btn').dataset.index; const dateStr = formatDate(selectedDate); tasks[dateStr].splice(index, 1); if (tasks[dateStr].length === 0) delete tasks[dateStr]; renderDayDetails(selectedDate); }
+            });
+            taskForm.addEventListener('submit', (e) => { e.preventDefault(); const dateStr = document.getElementById('task-date').value; const title = document.getElementById('task-title').value; const category = document.getElementById('task-category').value; if (!tasks[dateStr]) tasks[dateStr] = []; tasks[dateStr].push({ title, category }); renderDayDetails(new Date(dateStr + 'T12:00:00')); toggleModal(taskModal, false); });
+            document.getElementById('close-task-modal').addEventListener('click', () => toggleModal(taskModal, false));
+            googleLoginBtn.addEventListener('click', () => { isLoggedIn = true; googleLoginBtn.classList.add('hidden'); document.getElementById('user-profile').classList.remove('hidden'); document.getElementById('user-profile').classList.add('flex'); if (!selectedDate) renderDayDetails(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())); else renderDayDetails(selectedDate); setTimeout(triggerAISuggestion, 2000); });
+            
+            const init = () => { setupBackground(); translateUI(); lucide.createIcons(); appContainer.classList.remove('opacity-0'); };
+            init();
+        });
+    </script>
+</body>
+</html>
